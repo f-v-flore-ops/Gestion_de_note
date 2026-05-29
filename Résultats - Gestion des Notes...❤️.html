@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)http://127.0.0.1:5500/gestion/resultats.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./Résultats - Gestion des Notes...❤️_files/style.css">
+    <title>Résultats - Gestion des Notes</title>
+  </head>
+  <body>
+    <nav>
+      <a href="http://127.0.0.1:5500/gestion/accueil.html">Accueil</a>
+      <a href="http://127.0.0.1:5500/gestion/saisie.html">Saisie des Notes</a>
+      <a href="http://127.0.0.1:5500/gestion/resultats.html" class="active">Résultats</a>
+    </nav>
+
+    <main>
+      <h1>Tableau de Bord des Résultats Globaux</h1>
+      <p>
+        Voici la liste complète et officielle des moyennes calculées pour
+        l'ensemble des étudiants saisis.
+      </p>
+
+      <table id="resultatsTable" style="display: table;">
+        <thead>
+          <tr>
+            <th>Nom de l'étudiant</th>
+            <th>Note 1</th>
+            <th>Note 2</th>
+            <th>Moyenne Générale</th>
+            <th>Statut Décisionnel</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody><tr>
+                    <td><strong>yibokou flore</strong></td>
+                    <td>15 / 20</td>
+                    <td>16 / 20</td>
+                    <td>15.50 / 20</td>
+                    <td><span class="badge admis">Admis</span></td>
+                    <td><button class="btn-delete" onclick="supprimerEtudiantResultat(1779732470973)">Supprimer</button></td>
+                </tr></tbody>
+      </table>
+      <div id="emptyMessage" class="no-data" style="display: none">
+        Aucune note n'a encore été saisie. Allez sur la page de Saisie.
+      </div>
+    </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", genererTableauResultats);
+
+      function genererTableauResultats() {
+        const tbody = document.querySelector("#resultatsTable tbody");
+        const emptyMessage = document.getElementById("emptyMessage");
+        tbody.innerHTML = "";
+
+        // Récupérer les données envoyées depuis la page de saisie
+        const listeEtudiants =
+          JSON.parse(localStorage.getItem("etudiants")) || [];
+
+        if (listeEtudiants.length === 0) {
+          emptyMessage.style.display = "block";
+          document.getElementById("resultatsTable").style.display = "none";
+          return;
+        } else {
+          emptyMessage.style.display = "none";
+          document.getElementById("resultatsTable").style.display = "table";
+        }
+
+        listeEtudiants.forEach((etudiant) => {
+          const tr = document.createElement("tr");
+          const badgeClass = etudiant.etat === "Admis" ? "admis" : "ajourne";
+
+          tr.innerHTML = `
+                    <td><strong>${etudiant.nom}</strong></td>
+                    <td>${etudiant.note1} / 20</td>
+                    <td>${etudiant.note2} / 20</td>
+                    <td>${etudiant.moyenne} / 20</td>
+                    <td><span class="badge ${badgeClass}">${etudiant.etat}</span></td>
+                    <td><button class="btn-delete" onclick="supprimerEtudiantResultat(${etudiant.id})">Supprimer</button></td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function supprimerEtudiantResultat(id) {
+        if (confirm("Voulez-vous vraiment supprimer cet étudiant ?")) {
+          let listeEtudiants =
+            JSON.parse(localStorage.getItem("etudiants")) || [];
+          listeEtudiants = listeEtudiants.filter((e) => e.id !== id);
+          localStorage.setItem("etudiants", JSON.stringify(listeEtudiants));
+
+          // Rafraîchir le tableau actuel
+          genererTableauResultats();
+        }
+      }
+    </script>
+  <!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+
+</body></html>
